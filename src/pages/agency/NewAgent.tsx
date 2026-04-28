@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 type Message = { role: "assistant" | "user"; content: string };
 
@@ -49,7 +51,11 @@ export default function NewAgent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const templateParam = searchParams.get("template");
-  const [, setTemplateId] = useState<string | null>(templateParam);
+  const { user } = useAuth();
+  const [templateId, setTemplateId] = useState<string | null>(templateParam);
+  const [agencyId, setAgencyId] = useState<string | null>(null);
+  const [agentId, setAgentId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
   const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
   const [activeStep] = useState(1);

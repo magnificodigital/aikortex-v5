@@ -35,7 +35,8 @@ const App = () => (
               }
             >
               <Route index element={<AgencyHome />} />
-              <Route path="agents" element={<Placeholder title="Agentes" />} />
+              <Route path="agents" element={<Agents />} />
+              <Route path="agents/new" element={<Placeholder title="Novo Agente" />} />
               <Route path="calls" element={<Placeholder title="Ligações" />} />
               <Route path="flows" element={<Placeholder title="Flows" />} />
               <Route path="apps" element={<Placeholder title="Apps" />} />

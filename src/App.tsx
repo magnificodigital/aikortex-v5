@@ -48,7 +48,11 @@ const App = () => (
               <Route path="crm" element={<Placeholder title="CRM" />} />
               <Route path="meetings" element={<Placeholder title="Reuniões" />} />
               <Route path="partners" element={<Placeholder title="Partners Dashboard" />} />
+              <Route path="finance" element={<Placeholder title="Financeiro" />} />
+              <Route path="team" element={<Placeholder title="Equipe" />} />
+              <Route path="tasks" element={<Placeholder title="Tarefas" />} />
               <Route path="settings" element={<Placeholder title="Configurações" />} />
+              <Route path="admin-panel" element={<Placeholder title="Painel Admin" />} />
             </Route>
             <Route
               path="/admin"

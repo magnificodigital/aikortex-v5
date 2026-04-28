@@ -20,6 +20,10 @@ import {
   Sun,
   Gem,
   Settings,
+  DollarSign,
+  UserCog,
+  CheckSquare,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -66,6 +70,9 @@ const sections: Section[] = [
           { label: "Reuniões", to: "/agency/meetings", icon: Video },
         ],
       },
+      { label: "Financeiro", to: "/agency/finance", icon: DollarSign },
+      { label: "Equipe", to: "/agency/team", icon: UserCog },
+      { label: "Tarefas", to: "/agency/tasks", icon: CheckSquare },
     ],
   },
   {
@@ -78,6 +85,7 @@ const sections: Section[] = [
     title: "CONTA",
     items: [
       { label: "Configurações", to: "/agency/settings", icon: Settings },
+      { label: "Painel Admin", to: "/agency/admin-panel", icon: ShieldCheck },
     ],
   },
 ];
@@ -107,10 +115,10 @@ export default function AgencyLayout() {
   const isActive = (to?: string) => !!to && location.pathname === to;
 
   return (
-    <div className="flex h-screen w-full bg-[#0a0a0a] text-foreground">
+    <div className="flex h-screen w-full bg-[#000000] text-foreground">
       <aside
         className={cn(
-          "flex h-full shrink-0 flex-col border-r border-[#1f1f1f] bg-[#0d0d0d] transition-[width] duration-200",
+          "flex h-full shrink-0 flex-col border-r border-[#1a1a1a] bg-[#000000] transition-[width] duration-200",
           collapsed ? "w-16" : "w-60"
         )}
       >
@@ -128,7 +136,7 @@ export default function AgencyLayout() {
           <div className="px-3 pb-3">
             <button
               onClick={() => setAgencyOpen((v) => !v)}
-              className="flex w-full items-center justify-between rounded-md border border-[#1f1f1f] bg-[#111111] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#161616]"
+              className="flex w-full items-center justify-between rounded-md border border-[#1a1a1a] bg-[#0a0a0a] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#141414]"
             >
               <span className="truncate">Aikortex</span>
               <ChevronDown
@@ -233,7 +241,7 @@ export default function AgencyLayout() {
                               )}
                             </div>
                             {!collapsed && itemOpen && (
-                              <div className="ml-4 mt-0.5 space-y-0.5 border-l border-[#1f1f1f] pl-2">
+                              <div className="ml-4 mt-0.5 space-y-0.5 border-l border-[#1a1a1a] pl-2">
                                 {item.children.map((sub) => (
                                   <NavLink
                                     key={sub.to}
@@ -281,7 +289,7 @@ export default function AgencyLayout() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-[#1f1f1f] p-2">
+        <div className="border-t border-[#1a1a1a] p-2">
           <button
             className={cn(
               "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-[#1a1a1a] hover:text-white",

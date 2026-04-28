@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   Sparkles,
@@ -10,8 +10,32 @@ import {
   Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 type Message = { role: "assistant" | "user"; content: string };
+
+type Template = {
+  id: string;
+  name: string;
+  description: string | null;
+  agent_type: string;
+  sector: string | null;
+  system_prompt: string | null;
+};
+
+const DEFAULT_GREETING: Message = {
+  role: "assistant",
+  content:
+    "Olá! Sou o seu assistente de configuração da Aikortex. Vamos criar seu agente juntos.\n\n1. Qual será o nome do seu agente? (Ex: \"Alex\", \"Bia da Empresa X\", \"Consultor Especialista\")",
+};
+
+function buildTemplateGreeting(t: Template): Message {
+  const descLine = t.description ? `${t.description}\n\n` : "";
+  return {
+    role: "assistant",
+    content: `Olá! Vamos configurar o agente "${t.name}".\n\n${descLine}1. Qual será o nome do seu agente? (Ex: "Alex", "Bia da Empresa X")`,
+  };
+}
 
 const steps = [
   { n: 1, label: "Descobrir" },
@@ -23,17 +47,49 @@ const navItems = ["Agente", "Integrações", "Canais"];
 
 export default function NewAgent() {
   const navigate = useNavigate();
-  const [agentType] = useState("SDR");
+  const [searchParams] = useSearchParams();
+  const templateParam = searchParams.get("template");
+  const [, setTemplateId] = useState<string | null>(templateParam);
+  const [template, setTemplate] = useState<Template | null>(null);
+  const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
   const [activeStep] = useState(1);
   const [activeNav, setActiveNav] = useState("Agente");
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content:
-        "Olá! Sou o seu assistente de configuração da Aikortex. Vamos criar seu agente juntos.\n\n1. Qual será o nome do seu agente? (Ex: \"Alex\", \"Bia da Empresa X\", \"Consultor Especialista\")",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(
+    templateParam
+      ? [{ role: "assistant", content: "Carregando template…" }]
+      : [DEFAULT_GREETING]
+  );
+
+  const agentType = loadingTemplate
+    ? "…"
+    : template?.agent_type ?? (templateParam ? "Custom" : "SDR");
+
+  useEffect(() => {
+    if (!templateParam) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("agent_templates")
+        .select("id, name, description, agent_type, sector, system_prompt")
+        .eq("id", templateParam)
+        .eq("is_active", true)
+        .maybeSingle();
+      if (cancelled) return;
+      if (!error && data) {
+        const t = data as Template;
+        setTemplate(t);
+        setTemplateId(t.id);
+        setMessages([buildTemplateGreeting(t)]);
+      } else {
+        setMessages([DEFAULT_GREETING]);
+      }
+      setLoadingTemplate(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [templateParam]);
 
   function handleSend() {
     const text = input.trim();

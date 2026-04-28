@@ -35,6 +35,7 @@ const App = () => (
               }
             >
               <Route index element={<AgencyHome />} />
+              <Route path="dashboard" element={<Placeholder title="Dashboard" />} />
               <Route path="agents" element={<Agents />} />
               <Route path="agents/new" element={<Placeholder title="Novo Agente" />} />
               <Route path="calls" element={<Placeholder title="Ligações" />} />
@@ -42,7 +43,6 @@ const App = () => (
               <Route path="apps" element={<Placeholder title="Apps" />} />
               <Route path="messages" element={<Placeholder title="Mensagens" />} />
               <Route path="broadcasts" element={<Placeholder title="Disparos" />} />
-              <Route path="clients" element={<Placeholder title="Clientes" />} />
               <Route path="clients" element={<Placeholder title="Clientes" />} />
               <Route path="contracts" element={<Placeholder title="Contratos" />} />
               <Route path="crm" element={<Placeholder title="CRM" />} />

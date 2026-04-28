@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound.tsx";
 import AgencyHome from "./pages/agency/Home.tsx";
 import Agents from "./pages/agency/Agents.tsx";
 import Placeholder from "./pages/agency/Placeholder.tsx";
+import NewAgent from "./pages/agency/NewAgent.tsx";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +38,7 @@ const App = () => (
               <Route index element={<AgencyHome />} />
               <Route path="dashboard" element={<Placeholder title="Dashboard" />} />
               <Route path="agents" element={<Agents />} />
-              <Route path="agents/new" element={<Placeholder title="Novo Agente" />} />
+              
               <Route path="calls" element={<Placeholder title="Ligações" />} />
               <Route path="flows" element={<Placeholder title="Flows" />} />
               <Route path="apps" element={<Placeholder title="Apps" />} />
@@ -54,6 +55,14 @@ const App = () => (
               <Route path="settings" element={<Placeholder title="Configurações" />} />
               <Route path="admin-panel" element={<Placeholder title="Painel Admin" />} />
             </Route>
+            <Route
+              path="/agency/agents/new"
+              element={
+                <ProtectedRoute>
+                  <NewAgent />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/admin"
               element={

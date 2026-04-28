@@ -88,7 +88,7 @@ export default function NewAgent() {
     : template?.agent_type ?? (templateParam ? "Custom" : "SDR");
 
   useEffect(() => {
-    if (!templateParam) return;
+    if (!templateParam || agentIdFromUrl) return;
     let cancelled = false;
     (async () => {
       const { data, error } = await supabase
@@ -111,7 +111,70 @@ export default function NewAgent() {
     return () => {
       cancelled = true;
     };
-  }, [templateParam]);
+  }, [templateParam, agentIdFromUrl]);
+
+  // Load existing agent draft when in resume mode
+  useEffect(() => {
+    if (!agentIdFromUrl) return;
+    if (loadedAgentIdRef.current === agentIdFromUrl) return;
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      setLoadingAgent(true);
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("agency_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      const myAgencyId = (profile as { agency_id?: string } | null)?.agency_id ?? null;
+
+      const { data: agent, error } = await supabase
+        .from("agents")
+        .select("id, agency_id, agent_type, name, template_id, config")
+        .eq("id", agentIdFromUrl)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error || !agent) {
+        toast.error("Agente não encontrado");
+        navigate("/agency/agents");
+        return;
+      }
+      if (!myAgencyId || (agent as any).agency_id !== myAgencyId) {
+        toast.error("Sem acesso a este agente");
+        navigate("/agency/agents");
+        return;
+      }
+
+      const cfg = ((agent as any).config ?? {}) as {
+        messages?: Message[];
+        wizard_step?: number;
+        ready_to_publish?: boolean;
+      };
+
+      loadedAgentIdRef.current = (agent as any).id;
+      setAgentId((agent as any).id);
+      setTemplateId((agent as any).template_id ?? null);
+      setLoadedAgentType((agent as any).agent_type ?? null);
+      if (Array.isArray(cfg.messages) && cfg.messages.length > 0) {
+        setMessages(cfg.messages);
+      } else {
+        setMessages([]);
+      }
+      if (typeof cfg.wizard_step === "number") {
+        setActiveStep(cfg.wizard_step);
+      }
+      if (cfg.ready_to_publish === true) {
+        setReadyToPublish(true);
+      }
+      setLoadingAgent(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [agentIdFromUrl, user?.id, navigate]);
+
 
   useEffect(() => {
     if (!user?.id) return;

@@ -19,7 +19,8 @@ type Template = {
   id: string;
   name: string | null;
   description: string | null;
-  category: string | null;
+  sector: string | null;
+  agent_type: string | null;
   avatar_url?: string | null;
 };
 
@@ -90,8 +91,8 @@ export default function Agents() {
 
         const templatesQuery = supabase
           .from("agent_templates")
-          .select("id, name, description, category, avatar_url")
-          .eq("is_public", true)
+          .select("id, name, description, sector, agent_type, avatar_url")
+          .eq("is_active", true)
           .order("name");
 
         const [{ data: agentsData }, { data: templatesData }] = await Promise.all([
@@ -217,8 +218,8 @@ export default function Agents() {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {templates.map((tpl) => {
-              const Icon = categoryIcon[tpl.category ?? ""] ?? Sparkles;
-              const catColor = categoryColor[tpl.category ?? ""] ?? "text-neutral-400";
+              const Icon = categoryIcon[tpl.sector ?? ""] ?? Sparkles;
+              const catColor = categoryColor[tpl.sector ?? ""] ?? "text-neutral-400";
               return (
                 <button
                   key={tpl.id}
@@ -236,12 +237,19 @@ export default function Agents() {
                       <Icon className="h-5 w-5 text-neutral-300" />
                     )}
                   </div>
-                  <h3 className="text-sm font-semibold text-white">
-                    {tpl.name ?? "Sem nome"}
-                  </h3>
-                  {tpl.category && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-sm font-semibold text-white">
+                      {tpl.name ?? "Sem nome"}
+                    </h3>
+                    {tpl.agent_type && (
+                      <span className="rounded-full border border-neutral-700 bg-neutral-700/30 px-2 py-0.5 text-[10px] font-medium text-neutral-300">
+                        {tpl.agent_type}
+                      </span>
+                    )}
+                  </div>
+                  {tpl.sector && (
                     <p className={cn("mt-1 text-xs font-medium", catColor)}>
-                      {tpl.category}
+                      {tpl.sector}
                     </p>
                   )}
                   {tpl.description && (

@@ -83,8 +83,8 @@ export default function AgencyHome() {
                           className={cn(
                             "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                             active
-                              ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e]"
-                              : "border-white/[0.08] bg-transparent text-[#7585A3] hover:text-white"
+                              ? "border-white/10 bg-white/[0.04] text-white"
+                              : "border-white/[0.06] bg-transparent text-[#7585A3] hover:text-white"
                           )}
                         >
                           <c.icon className="h-3.5 w-3.5" />

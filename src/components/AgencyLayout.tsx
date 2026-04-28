@@ -107,7 +107,7 @@ export default function AgencyLayout() {
       <aside
         className={cn(
           "flex h-full shrink-0 flex-col border-r border-[#1a1a1a] bg-[#111217] transition-[width] duration-200",
-          collapsed ? "w-16" : "w-60"
+          collapsed ? "w-16" : "w-64"
         )}
       >
         {/* Logo */}

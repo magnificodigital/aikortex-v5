@@ -70,6 +70,9 @@ const sections: Section[] = [
           { label: "Reuniões", to: "/agency/meetings", icon: Video },
         ],
       },
+      { label: "Financeiro", to: "/agency/finance", icon: DollarSign },
+      { label: "Equipe", to: "/agency/team", icon: UserCog },
+      { label: "Tarefas", to: "/agency/tasks", icon: CheckSquare },
     ],
   },
   {
@@ -82,6 +85,7 @@ const sections: Section[] = [
     title: "CONTA",
     items: [
       { label: "Configurações", to: "/agency/settings", icon: Settings },
+      { label: "Painel Admin", to: "/agency/admin-panel", icon: ShieldCheck },
     ],
   },
 ];

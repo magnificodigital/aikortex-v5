@@ -64,6 +64,14 @@ const App = () => (
               }
             />
             <Route
+              path="/agency/agents/:id"
+              element={
+                <ProtectedRoute>
+                  <NewAgent />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/admin"
               element={
                 <ProtectedRoute requireRole="willy">

@@ -39,9 +39,9 @@ export default function AgencyHome() {
     <div className="mx-auto flex min-h-full max-w-3xl flex-col items-center px-6 py-20">
       <h1 className="text-center text-5xl font-light tracking-tight text-white">
         {greeting()},{" "}
-        <span className="italic font-normal">{name || "bem-vindo"}</span>
+        <span className="font-serif italic font-normal">{name || "Admin"}</span>
       </h1>
-      <p className="mt-4 max-w-md text-center text-base text-neutral-400">
+      <p className="mt-4 max-w-md text-center text-base text-[#7585A3]">
         Crie Agentes, Fluxos inteligentes e apps em minutos conversando com IA.
       </p>
 
@@ -53,8 +53,8 @@ export default function AgencyHome() {
                 key={t.value}
                 value={t.value}
                 className={cn(
-                  "rounded-full border border-transparent bg-transparent px-4 py-2 text-sm text-neutral-400",
-                  "data-[state=active]:border-[#1f1f1f] data-[state=active]:bg-[#111111] data-[state=active]:text-white data-[state=active]:shadow-none"
+                  "rounded-full border border-transparent bg-transparent px-4 py-2 text-sm text-[#7585A3]",
+                  "data-[state=active]:border-white/10 data-[state=active]:bg-white/5 data-[state=active]:text-white data-[state=active]:shadow-none"
                 )}
               >
                 <t.icon className="mr-2 h-4 w-4" />
@@ -65,12 +65,12 @@ export default function AgencyHome() {
 
           {tabs.map((t) => (
             <TabsContent key={t.value} value={t.value} className="mt-0">
-              <div className="rounded-2xl border border-[#1f1f1f] bg-[#111111] p-4">
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
                 <textarea
                   placeholder={t.placeholder}
                   value={values[t.value]}
                   onChange={(e) => setValues((v) => ({ ...v, [t.value]: e.target.value }))}
-                  className="min-h-[100px] w-full resize-none border-0 bg-transparent text-sm text-white outline-none placeholder:text-neutral-500"
+                  className="min-h-[100px] w-full resize-none border-0 bg-transparent text-sm text-white outline-none placeholder:text-[#7585A3]"
                 />
                 <div className="mt-3 flex items-end justify-between gap-3">
                   <div className="flex flex-wrap gap-2">
@@ -84,7 +84,7 @@ export default function AgencyHome() {
                             "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                             active
                               ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e]"
-                              : "border-[#1f1f1f] bg-[#0d0d0d] text-neutral-400 hover:text-white"
+                              : "border-white/[0.08] bg-transparent text-[#7585A3] hover:text-white"
                           )}
                         >
                           <c.icon className="h-3.5 w-3.5" />
@@ -94,7 +94,7 @@ export default function AgencyHome() {
                     })}
                   </div>
                   <button
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22c55e] text-black transition-colors hover:bg-[#22c55e]/90 disabled:bg-[#1f1f1f] disabled:text-neutral-500"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 disabled:bg-white/5 disabled:text-[#7585A3]"
                     disabled={!values[t.value]?.trim()}
                   >
                     <ArrowUp className="h-4 w-4" />
@@ -110,14 +110,14 @@ export default function AgencyHome() {
         {quickActions.map((q) => (
           <button
             key={q.label}
-            className="inline-flex items-center gap-2 rounded-full border border-[#1f1f1f] bg-[#111111] px-4 py-2 text-xs font-medium text-neutral-300 transition-colors hover:border-[#22c55e]/40 hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-transparent px-4 py-2 text-xs font-medium text-[#7585A3] transition-colors hover:border-white/20 hover:text-white"
           >
             <q.icon className="h-3.5 w-3.5" />
             {q.label}
           </button>
         ))}
         <button
-          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#1f1f1f] bg-[#111111] text-neutral-400 transition-colors hover:text-white"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.08] bg-transparent text-[#7585A3] transition-colors hover:text-white"
           aria-label="Atualizar"
         >
           <RefreshCw className="h-3.5 w-3.5" />

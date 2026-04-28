@@ -54,6 +54,7 @@ const sections: Section[] = [
     items: [
       {
         label: "Clientes",
+        to: "/agency/clients",
         icon: Users,
         children: [{ label: "Contratos", to: "/agency/contracts", icon: FileText }],
       },

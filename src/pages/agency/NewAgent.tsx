@@ -61,9 +61,11 @@ export default function NewAgent() {
   const [saving, setSaving] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
   const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
-  const [activeStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(1);
   const [activeNav, setActiveNav] = useState("Agente");
   const [channelStates, setChannelStates] = useState<Record<string, boolean>>({});
+  const [thinking, setThinking] = useState(false);
+  const [readyToPublish, setReadyToPublish] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>(
     templateParam
@@ -128,31 +130,59 @@ export default function NewAgent() {
     setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
 
-    if (agentId) return;
+    let currentAgentId = agentId;
 
-    setSaving(true);
-    try {
-      const { data, error } = await supabase
-        .from("agents")
-        .insert({
-          agency_id: agencyId,
-          agent_type: template?.agent_type ?? "Custom",
-          name: text.slice(0, 80),
-          template_id: templateId ?? null,
-          status: "draft",
-          description: template?.description ?? null,
-          system_prompt: template?.system_prompt ?? null,
-        })
-        .select("id")
-        .single();
-      if (error) throw error;
-      setAgentId(data.id);
-      toast.success("Rascunho salvo");
-    } catch (err) {
-      console.error(err);
-      toast.error("Não foi possível salvar o rascunho");
-    } finally {
+    if (!currentAgentId) {
+      setSaving(true);
+      try {
+        const { data, error } = await supabase
+          .from("agents")
+          .insert({
+            agency_id: agencyId,
+            agent_type: template?.agent_type ?? "Custom",
+            name: text.slice(0, 80),
+            template_id: templateId ?? null,
+            status: "draft",
+            description: template?.description ?? null,
+            system_prompt: template?.system_prompt ?? null,
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        currentAgentId = data.id;
+        setAgentId(data.id);
+        toast.success("Rascunho salvo");
+      } catch (err) {
+        console.error(err);
+        toast.error("Não foi possível salvar o rascunho");
+        setSaving(false);
+        return;
+      }
       setSaving(false);
+    }
+
+    setThinking(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("app-chat", {
+        body: { agent_id: currentAgentId, user_message: text },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+
+      const assistantMessage = (data as any).assistant_message as string;
+      const wizardStep = (data as any).wizard_step as number;
+      const ready = !!(data as any).ready_to_publish;
+
+      setMessages((m) => [...m, { role: "assistant", content: assistantMessage }]);
+      if (typeof wizardStep === "number" && wizardStep !== activeStep) {
+        setActiveStep(wizardStep);
+      }
+      if (ready) setReadyToPublish(true);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message ?? "Erro ao conversar com o agente");
+    } finally {
+      setThinking(false);
     }
   }
 
@@ -207,7 +237,12 @@ export default function NewAgent() {
               {item}
             </button>
           ))}
-          <button className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+          <button
+            className={cn(
+              "rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90",
+              readyToPublish && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+            )}
+          >
             Publicar
           </button>
         </nav>
@@ -276,6 +311,16 @@ export default function NewAgent() {
                 </div>
               </div>
             ))}
+            {thinking && (
+              <div className="flex justify-start gap-2">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                  <Bot className="h-4 w-4" />
+                </div>
+                <div className="max-w-[85%] rounded-2xl bg-muted px-4 py-3 text-sm text-muted-foreground">
+                  <span className="inline-block animate-pulse">●●●</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Input */}
@@ -302,7 +347,7 @@ export default function NewAgent() {
               />
               <button
                 onClick={handleSend}
-                disabled={!input.trim() || !agencyId || saving}
+                disabled={!input.trim() || !agencyId || saving || thinking}
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted p-2 text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                 aria-label="Enviar"
               >

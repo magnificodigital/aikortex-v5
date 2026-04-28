@@ -20,6 +20,10 @@ import {
   Sun,
   Gem,
   Settings,
+  DollarSign,
+  UserCog,
+  CheckSquare,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";

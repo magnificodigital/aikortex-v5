@@ -94,7 +94,7 @@ export default function AgencyHome() {
                     })}
                   </div>
                   <button
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 disabled:bg-white/5 disabled:text-[#7585A3]"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#111217] transition-colors hover:bg-white/90 disabled:bg-white/10 disabled:text-[#7585A3]"
                     disabled={!values[t.value]?.trim()}
                   >
                     <ArrowUp className="h-4 w-4" />

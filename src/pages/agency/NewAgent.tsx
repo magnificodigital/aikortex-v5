@@ -237,7 +237,12 @@ export default function NewAgent() {
               {item}
             </button>
           ))}
-          <button className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+          <button
+            className={cn(
+              "rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90",
+              readyToPublish && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+            )}
+          >
             Publicar
           </button>
         </nav>

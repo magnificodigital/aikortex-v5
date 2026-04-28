@@ -97,11 +97,59 @@ export default function NewAgent() {
     };
   }, [templateParam]);
 
-  function handleSend() {
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("agency_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      setAgencyId((data as { agency_id?: string } | null)?.agency_id ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
+
+  async function handleSend() {
     const text = input.trim();
     if (!text) return;
+    if (!agencyId) {
+      toast.error("Sua conta não está vinculada a uma agência");
+      return;
+    }
     setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
+
+    if (agentId) return;
+
+    setSaving(true);
+    try {
+      const { data, error } = await supabase
+        .from("agents")
+        .insert({
+          agency_id: agencyId,
+          agent_type: template?.agent_type ?? "Custom",
+          name: text.slice(0, 80),
+          template_id: templateId ?? null,
+          status: "draft",
+          description: template?.description ?? null,
+          system_prompt: template?.system_prompt ?? null,
+        })
+        .select("id")
+        .single();
+      if (error) throw error;
+      setAgentId(data.id);
+      toast.success("Rascunho salvo");
+    } catch (err) {
+      console.error(err);
+      toast.error("Não foi possível salvar o rascunho");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (

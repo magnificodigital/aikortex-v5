@@ -138,9 +138,9 @@ export default function AgencyLayout() {
         )}
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto px-3 py-1">
+        <nav className="flex-1 overflow-y-auto px-3 py-2">
           {/* Top items (fixed, no section) */}
-          <div className="mb-3 space-y-0.5">
+          <div className="mb-4 space-y-1">
             {topItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -148,14 +148,14 @@ export default function AgencyLayout() {
                 end
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
-                    isActive && "bg-[#1a1a1a] text-white",
+                    "flex items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-normal transition-colors",
+                    "text-[#7585A3] hover:bg-white/[0.04] hover:text-white",
+                    isActive && "bg-white/[0.06] text-white",
                     collapsed && "justify-center px-0"
                   )
                 }
               >
-                <item.icon className="h-4 w-4 shrink-0" />
+                <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                 {!collapsed && <span>{item.label}</span>}
               </NavLink>
             ))}
@@ -164,25 +164,26 @@ export default function AgencyLayout() {
           {sections.map((section) => {
             const open = openSections[section.title] ?? true;
             return (
-              <div key={section.title} className="mb-3">
+              <div key={section.title} className="mb-4">
                 {!collapsed && (
                   <button
                     onClick={() =>
                       setOpenSections((s) => ({ ...s, [section.title]: !open }))
                     }
-                    className="flex w-full items-center justify-between px-3 py-1.5 text-[11px] font-semibold tracking-wider text-[#7585A3] hover:text-white"
+                    className="flex w-full items-center justify-between px-3 pb-2 pt-3 text-xs font-medium uppercase tracking-[0.12em] text-[#7585A3] hover:text-white"
                   >
                     <span>{section.title}</span>
                     <ChevronDown
                       className={cn(
-                        "h-3 w-3 transition-transform",
+                        "h-4 w-4 transition-transform",
                         !open && "-rotate-90"
                       )}
+                      strokeWidth={1.75}
                     />
                   </button>
                 )}
                 {(open || collapsed) && (
-                  <div className="mt-1 space-y-0.5">
+                  <div className="mt-1 space-y-1">
                     {section.items.map((item) => {
                       if (item.children) {
                         const itemOpen = openItems[item.label] ?? true;
@@ -194,8 +195,8 @@ export default function AgencyLayout() {
                           <div key={item.label}>
                             <div
                               className={cn(
-                                "flex w-full items-center gap-3 rounded-md text-sm font-medium transition-colors",
-                                "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
+                                "flex w-full items-center gap-3 rounded-md text-[15px] font-normal transition-colors",
+                                "text-[#7585A3] hover:bg-white/[0.04] hover:text-white",
                                 (anyChildActive || parentActive) && "text-white",
                                 collapsed && "justify-center"
                               )}
@@ -205,13 +206,13 @@ export default function AgencyLayout() {
                                   to={item.to}
                                   className={({ isActive }) =>
                                     cn(
-                                      "flex flex-1 items-center gap-3 rounded-md px-3 py-2",
-                                      isActive && "bg-[#1a1a1a] text-white",
+                                      "flex flex-1 items-center gap-3 rounded-md px-3 py-2.5",
+                                      isActive && "bg-white/[0.06] text-white",
                                       collapsed && "justify-center px-0"
                                     )
                                   }
                                 >
-                                  <item.icon className="h-4 w-4 shrink-0" />
+                                  <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                                   {!collapsed && (
                                     <span className="flex-1 text-left">{item.label}</span>
                                   )}
@@ -222,11 +223,11 @@ export default function AgencyLayout() {
                                     setOpenItems((s) => ({ ...s, [item.label]: !itemOpen }))
                                   }
                                   className={cn(
-                                    "flex flex-1 items-center gap-3 px-3 py-2",
+                                    "flex flex-1 items-center gap-3 px-3 py-2.5",
                                     collapsed && "justify-center px-0"
                                   )}
                                 >
-                                  <item.icon className="h-4 w-4 shrink-0" />
+                                  <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                                   {!collapsed && (
                                     <span className="flex-1 text-left">{item.label}</span>
                                   )}
@@ -242,28 +243,29 @@ export default function AgencyLayout() {
                                 >
                                   <ChevronDown
                                     className={cn(
-                                      "h-3 w-3 transition-transform",
+                                      "h-4 w-4 transition-transform",
                                       !itemOpen && "-rotate-90"
                                     )}
+                                    strokeWidth={1.75}
                                   />
                                 </button>
                               )}
                             </div>
                             {!collapsed && itemOpen && (
-                              <div className="ml-4 mt-0.5 space-y-0.5 border-l border-[#1a1a1a] pl-2">
+                              <div className="ml-4 mt-1 space-y-1 border-l border-white/[0.06] pl-2">
                                 {item.children.map((sub) => (
                                   <NavLink
                                     key={sub.to}
                                     to={sub.to}
                                     className={({ isActive }) =>
                                       cn(
-                                        "flex items-center gap-3 rounded-md px-3 py-1.5 text-sm transition-colors",
-                                        "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
-                                        isActive && "bg-[#1a1a1a] text-white"
+                                        "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                                        "text-[#7585A3] hover:bg-white/[0.04] hover:text-white",
+                                        isActive && "bg-white/[0.06] text-white"
                                       )
                                     }
                                   >
-                                    <sub.icon className="h-3.5 w-3.5" />
+                                    <sub.icon className="h-4 w-4" strokeWidth={1.75} />
                                     <span>{sub.label}</span>
                                   </NavLink>
                                 ))}
@@ -278,14 +280,14 @@ export default function AgencyLayout() {
                           to={item.to!}
                           className={({ isActive }) =>
                             cn(
-                              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                              "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
-                              isActive && "bg-[#1a1a1a] text-white",
+                              "flex items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-normal transition-colors",
+                              "text-[#7585A3] hover:bg-white/[0.04] hover:text-white",
+                              isActive && "bg-white/[0.06] text-white",
                               collapsed && "justify-center px-0"
                             )
                           }
                         >
-                          <item.icon className="h-4 w-4 shrink-0" />
+                          <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                           {!collapsed && <span>{item.label}</span>}
                         </NavLink>
                       );

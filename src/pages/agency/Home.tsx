@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Bot, Workflow, AppWindow, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Bot, Workflow, AppWindow, Globe, MessageCircle, ArrowUp, RefreshCw, Monitor, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 function greeting() {
   const h = new Date().getHours();
@@ -13,37 +12,50 @@ function greeting() {
 }
 
 const tabs = [
-  { value: "app", label: "App", icon: AppWindow, placeholder: "Descreva o app que quer criar..." },
-  { value: "agent", label: "Agente", icon: Bot, placeholder: "Descreva o agente que quer criar..." },
-  { value: "flow", label: "Flow", icon: Workflow, placeholder: "Descreva o flow que quer criar..." },
+  { value: "app", label: "App", icon: Monitor, placeholder: "Descreva o app que você quer criar..." },
+  { value: "agent", label: "Agentes", icon: Sparkles, placeholder: "Descreva o agente que você quer criar..." },
+  { value: "flow", label: "Flows", icon: Globe, placeholder: "Descreva o flow que você quer criar..." },
+];
+
+const channels = [
+  { value: "web", label: "Web App", icon: Monitor },
+  { value: "whatsapp", label: "WhatsApp", icon: MessageCircle },
 ];
 
 const quickActions = [
-  { title: "Criar Agente", description: "Configure um novo agente de IA", icon: Bot },
-  { title: "Criar Flow", description: "Monte um fluxo automatizado", icon: Workflow },
-  { title: "Criar App", description: "Construa uma aplicação completa", icon: AppWindow },
+  { label: "Construtor de Formulários", icon: Monitor },
+  { label: "Dashboard de Vendas", icon: Monitor },
+  { label: "Landing Page", icon: Monitor },
 ];
 
 export default function AgencyHome() {
   const { profile } = useAuth();
   const [values, setValues] = useState<Record<string, string>>({ app: "", agent: "", flow: "" });
-  const name = profile?.full_name?.split(" ")[0] ?? "";
+  const [channel, setChannel] = useState("web");
+  const [activeTab, setActiveTab] = useState("app");
+  const name = profile?.full_name ?? "";
 
   return (
-    <div className="mx-auto max-w-5xl px-8 py-10">
-      <h1 className="text-3xl font-semibold text-white">
-        {greeting()}{name ? `, ${name}` : ""}
+    <div className="mx-auto flex min-h-full max-w-3xl flex-col items-center px-6 py-20">
+      <h1 className="text-center text-5xl font-light tracking-tight text-white">
+        {greeting()},{" "}
+        <span className="italic font-normal">{name || "bem-vindo"}</span>
       </h1>
-      <p className="mt-1 text-sm text-neutral-400">O que vamos construir hoje?</p>
+      <p className="mt-4 max-w-md text-center text-base text-neutral-400">
+        Crie Agentes, Fluxos inteligentes e apps em minutos conversando com IA.
+      </p>
 
-      <div className="mt-8 rounded-xl border border-[#1f1f1f] bg-[#111111] p-5">
-        <Tabs defaultValue="app">
-          <TabsList className="bg-[#1a1a1a]">
+      <div className="mt-10 w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-3 h-auto gap-1 bg-transparent p-0">
             {tabs.map((t) => (
               <TabsTrigger
                 key={t.value}
                 value={t.value}
-                className="data-[state=active]:bg-[#22c55e] data-[state=active]:text-black"
+                className={cn(
+                  "rounded-full border border-transparent bg-transparent px-4 py-2 text-sm text-neutral-400",
+                  "data-[state=active]:border-[#1f1f1f] data-[state=active]:bg-[#111111] data-[state=active]:text-white data-[state=active]:shadow-none"
+                )}
               >
                 <t.icon className="mr-2 h-4 w-4" />
                 {t.label}
@@ -52,37 +64,64 @@ export default function AgencyHome() {
           </TabsList>
 
           {tabs.map((t) => (
-            <TabsContent key={t.value} value={t.value} className="mt-4 space-y-3">
-              <Textarea
-                placeholder={t.placeholder}
-                value={values[t.value]}
-                onChange={(e) => setValues((v) => ({ ...v, [t.value]: e.target.value }))}
-                className="min-h-[120px] border-[#1f1f1f] bg-[#0a0a0a] text-white placeholder:text-neutral-500 focus-visible:ring-[#22c55e]"
-              />
-              <div className="flex justify-end">
-                <Button className="bg-[#22c55e] text-black hover:bg-[#22c55e]/90">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Criar com IA
-                </Button>
+            <TabsContent key={t.value} value={t.value} className="mt-0">
+              <div className="rounded-2xl border border-[#1f1f1f] bg-[#111111] p-4">
+                <textarea
+                  placeholder={t.placeholder}
+                  value={values[t.value]}
+                  onChange={(e) => setValues((v) => ({ ...v, [t.value]: e.target.value }))}
+                  className="min-h-[100px] w-full resize-none border-0 bg-transparent text-sm text-white outline-none placeholder:text-neutral-500"
+                />
+                <div className="mt-3 flex items-end justify-between gap-3">
+                  <div className="flex flex-wrap gap-2">
+                    {channels.map((c) => {
+                      const active = channel === c.value;
+                      return (
+                        <button
+                          key={c.value}
+                          onClick={() => setChannel(c.value)}
+                          className={cn(
+                            "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                            active
+                              ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e]"
+                              : "border-[#1f1f1f] bg-[#0d0d0d] text-neutral-400 hover:text-white"
+                          )}
+                        >
+                          <c.icon className="h-3.5 w-3.5" />
+                          {c.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22c55e] text-black transition-colors hover:bg-[#22c55e]/90 disabled:bg-[#1f1f1f] disabled:text-neutral-500"
+                    disabled={!values[t.value]?.trim()}
+                  >
+                    <ArrowUp className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </TabsContent>
           ))}
         </Tabs>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
         {quickActions.map((q) => (
           <button
-            key={q.title}
-            className="group rounded-xl border border-[#1f1f1f] bg-[#111111] p-5 text-left transition-colors hover:border-[#22c55e]/50"
+            key={q.label}
+            className="inline-flex items-center gap-2 rounded-full border border-[#1f1f1f] bg-[#111111] px-4 py-2 text-xs font-medium text-neutral-300 transition-colors hover:border-[#22c55e]/40 hover:text-white"
           >
-            <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[#22c55e]/10 text-[#22c55e]">
-              <q.icon className="h-5 w-5" />
-            </div>
-            <div className="text-sm font-medium text-white">{q.title}</div>
-            <div className="mt-1 text-xs text-neutral-400">{q.description}</div>
+            <q.icon className="h-3.5 w-3.5" />
+            {q.label}
           </button>
         ))}
+        <button
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#1f1f1f] bg-[#111111] text-neutral-400 transition-colors hover:text-white"
+          aria-label="Atualizar"
+        >
+          <RefreshCw className="h-3.5 w-3.5" />
+        </button>
       </div>
     </div>
   );

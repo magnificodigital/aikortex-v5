@@ -65,10 +65,11 @@ export default function Agents() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingTemplates, setLoadingTemplates] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    async function load() {
+    async function loadAgents() {
       setLoading(true);
       try {
         let agencyId: string | null = null;
@@ -81,38 +82,44 @@ export default function Agents() {
           agencyId = (profile as { agency_id?: string } | null)?.agency_id ?? null;
         }
 
-        const agentsQuery = agencyId
-          ? supabase
-              .from("agents")
-              .select("id, name, type, status, description, avatar_url, updated_at")
-              .eq("agency_id", agencyId)
-              .order("updated_at", { ascending: false })
-          : Promise.resolve({ data: [], error: null } as { data: Agent[]; error: null });
-
-        const templatesQuery = supabase
-          .from("agent_templates")
-          .select("id, name, description, sector, agent_type, avatar_url")
-          .eq("is_active", true)
-          .order("name");
-
-        const [{ data: agentsData }, { data: templatesData }] = await Promise.all([
-          agentsQuery,
-          templatesQuery,
-        ]);
-
-        if (!cancelled) {
-          setAgents((agentsData as Agent[]) ?? []);
-          setTemplates((templatesData as Template[]) ?? []);
+        if (!agencyId) {
+          if (!cancelled) setAgents([]);
+          return;
         }
+
+        const { data: agentsData } = await supabase
+          .from("agents")
+          .select("id, name, type, status, description, avatar_url, updated_at")
+          .eq("agency_id", agencyId)
+          .order("updated_at", { ascending: false });
+
+        if (!cancelled) setAgents((agentsData as Agent[]) ?? []);
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
-    load();
+    loadAgents();
     return () => {
       cancelled = true;
     };
   }, [user?.id]);
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      const { data, error } = await supabase
+        .from('agent_templates')
+        .select('id, name, description, agent_type, sector')
+        .eq('is_active', true)
+        .order('name', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching templates:', error);
+      }
+      setTemplates(data || []);
+      setLoadingTemplates(false);
+    };
+    fetchTemplates();
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-8 py-10">
@@ -207,7 +214,7 @@ export default function Agents() {
       {/* Templates */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-white">Templates</h2>
-        {loading ? (
+        {loadingTemplates ? (
           <div className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-6 text-sm text-neutral-500">
             Carregando…
           </div>

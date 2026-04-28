@@ -139,38 +139,8 @@ export default function AgencyLayout() {
           </div>
         )}
 
-        {/* Home + nav */}
+        {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-3 py-1">
-          <NavLink
-            to="/agency"
-            end
-            className={({ isActive }) =>
-              cn(
-                "mb-3 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                "text-neutral-300 hover:bg-[#1a1a1a] hover:text-white",
-                isActive && "bg-[#1a1a1a] text-white",
-                collapsed && "justify-center px-0"
-              )
-            }
-          >
-            <Home className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>Home</span>}
-          </NavLink>
-
-          <NavLink
-            to="/agency/partners"
-            className={({ isActive }) =>
-              cn(
-                "mb-4 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                "text-neutral-300 hover:bg-[#1a1a1a] hover:text-white",
-                isActive && "bg-[#1a1a1a] text-white",
-                collapsed && "justify-center px-0"
-              )
-            }
-          >
-            <LayoutDashboard className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>Dashboard</span>}
-          </NavLink>
 
           {sections.map((section) => {
             const open = openSections[section.title] ?? true;

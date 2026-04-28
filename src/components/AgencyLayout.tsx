@@ -124,7 +124,7 @@ export default function AgencyLayout() {
           <div className="px-3 pb-3">
             <button
               onClick={() => setAgencyOpen((v) => !v)}
-              className="flex w-full items-center justify-between rounded-md border border-[#1a1a1a] bg-[#0a0a0a] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#141414]"
+              className="flex w-full items-center justify-between rounded-lg border border-[#7585A3]/40 bg-transparent px-3 py-2.5 text-sm font-normal text-white transition-colors hover:border-[#7585A3]/60"
             >
               <span className="truncate">Aikortex</span>
               <ChevronDown

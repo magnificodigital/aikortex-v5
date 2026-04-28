@@ -53,14 +53,17 @@ const navItems = ["Agente", "Integrações", "Canais"];
 export default function NewAgent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { id: agentIdFromUrl } = useParams<{ id: string }>();
   const templateParam = searchParams.get("template");
   const { user } = useAuth();
   const [templateId, setTemplateId] = useState<string | null>(templateParam);
   const [agencyId, setAgencyId] = useState<string | null>(null);
-  const [agentId, setAgentId] = useState<string | null>(null);
+  const [agentId, setAgentId] = useState<string | null>(agentIdFromUrl ?? null);
   const [saving, setSaving] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
-  const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
+  const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam && !agentIdFromUrl);
+  const [loadingAgent, setLoadingAgent] = useState<boolean>(!!agentIdFromUrl);
+  const [loadedAgentType, setLoadedAgentType] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState(1);
   const [activeNav, setActiveNav] = useState("Agente");
   const [channelStates, setChannelStates] = useState<Record<string, boolean>>({});
@@ -68,12 +71,19 @@ export default function NewAgent() {
   const [readyToPublish, setReadyToPublish] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>(
-    templateParam
+    agentIdFromUrl
+      ? [{ role: "assistant", content: "Carregando agente…" }]
+      : templateParam
       ? [{ role: "assistant", content: "Carregando template…" }]
       : [DEFAULT_GREETING]
   );
+  const loadedAgentIdRef = useRef<string | null>(null);
 
-  const agentType = loadingTemplate
+  const agentType = loadedAgentType
+    ? loadedAgentType
+    : loadingAgent
+    ? "…"
+    : loadingTemplate
     ? "…"
     : template?.agent_type ?? (templateParam ? "Custom" : "SDR");
 

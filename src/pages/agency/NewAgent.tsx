@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 type Message = { role: "assistant" | "user"; content: string };
 
@@ -49,7 +51,11 @@ export default function NewAgent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const templateParam = searchParams.get("template");
-  const [, setTemplateId] = useState<string | null>(templateParam);
+  const { user } = useAuth();
+  const [templateId, setTemplateId] = useState<string | null>(templateParam);
+  const [agencyId, setAgencyId] = useState<string | null>(null);
+  const [agentId, setAgentId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
   const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
   const [activeStep] = useState(1);
@@ -91,11 +97,59 @@ export default function NewAgent() {
     };
   }, [templateParam]);
 
-  function handleSend() {
+  useEffect(() => {
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("agency_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      setAgencyId((data as { agency_id?: string } | null)?.agency_id ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
+
+  async function handleSend() {
     const text = input.trim();
     if (!text) return;
+    if (!agencyId) {
+      toast.error("Sua conta não está vinculada a uma agência");
+      return;
+    }
     setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
+
+    if (agentId) return;
+
+    setSaving(true);
+    try {
+      const { data, error } = await supabase
+        .from("agents")
+        .insert({
+          agency_id: agencyId,
+          agent_type: template?.agent_type ?? "Custom",
+          name: text.slice(0, 80),
+          template_id: templateId ?? null,
+          status: "draft",
+          description: template?.description ?? null,
+          system_prompt: template?.system_prompt ?? null,
+        })
+        .select("id")
+        .single();
+      if (error) throw error;
+      setAgentId(data.id);
+      toast.success("Rascunho salvo");
+    } catch (err) {
+      console.error(err);
+      toast.error("Não foi possível salvar o rascunho");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -119,6 +173,11 @@ export default function NewAgent() {
             <span className="rounded-md border border-border px-2 py-0.5 text-xs text-foreground">
               {agentType}
             </span>
+            {saving ? (
+              <span className="text-xs text-muted-foreground">Salvando…</span>
+            ) : agentId ? (
+              <span className="text-xs text-muted-foreground">Rascunho salvo</span>
+            ) : null}
           </div>
 
           <div className="mx-2 h-5 w-px bg-border" />
@@ -239,7 +298,7 @@ export default function NewAgent() {
               />
               <button
                 onClick={handleSend}
-                disabled={!input.trim()}
+                disabled={!input.trim() || !agencyId || saving}
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted p-2 text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                 aria-label="Enviar"
               >

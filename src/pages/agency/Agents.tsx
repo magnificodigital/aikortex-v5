@@ -8,10 +8,9 @@ import { cn } from "@/lib/utils";
 type Agent = {
   id: string;
   name: string | null;
-  type: string | null;
+  agent_type: string | null;
   status: string | null;
   description: string | null;
-  avatar_url: string | null;
   updated_at: string | null;
 };
 
@@ -89,7 +88,7 @@ export default function Agents() {
 
         const { data: agentsData } = await supabase
           .from("agents")
-          .select("id, name, type, status, description, avatar_url, updated_at")
+          .select("id, name, agent_type, status, description, updated_at")
           .eq("agency_id", agencyId)
           .order("updated_at", { ascending: false });
 
@@ -156,7 +155,7 @@ export default function Agents() {
           <div className="space-y-3">
             {agents.map((agent) => {
               const badgeClass =
-                typeBadgeClass[agent.type ?? ""] ??
+                typeBadgeClass[agent.agent_type ?? ""] ??
                 "bg-muted text-muted-foreground";
               return (
                 <div
@@ -164,34 +163,26 @@ export default function Agents() {
                   className="flex items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-base font-semibold text-foreground">
-                    {agent.avatar_url ? (
-                      <img
-                        src={agent.avatar_url}
-                        alt={agent.name ?? "Agente"}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      initialOf(agent.name)
-                    )}
+                    {initialOf(agent.name)}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="truncate text-sm font-semibold text-foreground">
                         {agent.name ?? "Sem nome"}
                       </h3>
-                      {agent.type && (
+                      {agent.agent_type && (
                         <span
                           className={cn(
                             "rounded-full px-2 py-0.5 text-xs",
                             badgeClass
                           )}
                         >
-                          {agent.type}
+                          {agent.agent_type}
                         </span>
                       )}
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground">
-                      {[agent.type ?? "Custom", agent.status ?? "—"]
+                      {[agent.agent_type ?? "Custom", agent.status ?? "—"]
                         .filter(Boolean)
                         .join(" • ")}
                     </p>

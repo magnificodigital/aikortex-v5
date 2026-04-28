@@ -173,6 +173,11 @@ export default function NewAgent() {
             <span className="rounded-md border border-border px-2 py-0.5 text-xs text-foreground">
               {agentType}
             </span>
+            {saving ? (
+              <span className="text-xs text-muted-foreground">Salvando…</span>
+            ) : agentId ? (
+              <span className="text-xs text-muted-foreground">Rascunho salvo</span>
+            ) : null}
           </div>
 
           <div className="mx-2 h-5 w-px bg-border" />
@@ -293,7 +298,7 @@ export default function NewAgent() {
               />
               <button
                 onClick={handleSend}
-                disabled={!input.trim()}
+                disabled={!input.trim() || !agencyId || saving}
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted p-2 text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                 aria-label="Enviar"
               >

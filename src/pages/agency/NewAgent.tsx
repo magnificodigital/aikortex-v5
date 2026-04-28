@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   Sparkles,
@@ -10,8 +10,32 @@ import {
   Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 type Message = { role: "assistant" | "user"; content: string };
+
+type Template = {
+  id: string;
+  name: string;
+  description: string | null;
+  agent_type: string;
+  sector: string | null;
+  system_prompt: string | null;
+};
+
+const DEFAULT_GREETING: Message = {
+  role: "assistant",
+  content:
+    "Olá! Sou o seu assistente de configuração da Aikortex. Vamos criar seu agente juntos.\n\n1. Qual será o nome do seu agente? (Ex: \"Alex\", \"Bia da Empresa X\", \"Consultor Especialista\")",
+};
+
+function buildTemplateGreeting(t: Template): Message {
+  const descLine = t.description ? `${t.description}\n\n` : "";
+  return {
+    role: "assistant",
+    content: `Olá! Vamos configurar o agente "${t.name}".\n\n${descLine}1. Qual será o nome do seu agente? (Ex: "Alex", "Bia da Empresa X")`,
+  };
+}
 
 const steps = [
   { n: 1, label: "Descobrir" },

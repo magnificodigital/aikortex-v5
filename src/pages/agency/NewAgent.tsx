@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   Sparkles,
@@ -53,14 +53,17 @@ const navItems = ["Agente", "Integrações", "Canais"];
 export default function NewAgent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { id: agentIdFromUrl } = useParams<{ id: string }>();
   const templateParam = searchParams.get("template");
   const { user } = useAuth();
   const [templateId, setTemplateId] = useState<string | null>(templateParam);
   const [agencyId, setAgencyId] = useState<string | null>(null);
-  const [agentId, setAgentId] = useState<string | null>(null);
+  const [agentId, setAgentId] = useState<string | null>(agentIdFromUrl ?? null);
   const [saving, setSaving] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
-  const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
+  const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam && !agentIdFromUrl);
+  const [loadingAgent, setLoadingAgent] = useState<boolean>(!!agentIdFromUrl);
+  const [loadedAgentType, setLoadedAgentType] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState(1);
   const [activeNav, setActiveNav] = useState("Agente");
   const [channelStates, setChannelStates] = useState<Record<string, boolean>>({});
@@ -68,17 +71,24 @@ export default function NewAgent() {
   const [readyToPublish, setReadyToPublish] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>(
-    templateParam
+    agentIdFromUrl
+      ? [{ role: "assistant", content: "Carregando agente…" }]
+      : templateParam
       ? [{ role: "assistant", content: "Carregando template…" }]
       : [DEFAULT_GREETING]
   );
+  const loadedAgentIdRef = useRef<string | null>(null);
 
-  const agentType = loadingTemplate
+  const agentType = loadedAgentType
+    ? loadedAgentType
+    : loadingAgent
+    ? "…"
+    : loadingTemplate
     ? "…"
     : template?.agent_type ?? (templateParam ? "Custom" : "SDR");
 
   useEffect(() => {
-    if (!templateParam) return;
+    if (!templateParam || agentIdFromUrl) return;
     let cancelled = false;
     (async () => {
       const { data, error } = await supabase
@@ -101,7 +111,70 @@ export default function NewAgent() {
     return () => {
       cancelled = true;
     };
-  }, [templateParam]);
+  }, [templateParam, agentIdFromUrl]);
+
+  // Load existing agent draft when in resume mode
+  useEffect(() => {
+    if (!agentIdFromUrl) return;
+    if (loadedAgentIdRef.current === agentIdFromUrl) return;
+    if (!user?.id) return;
+    let cancelled = false;
+    (async () => {
+      setLoadingAgent(true);
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("agency_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      const myAgencyId = (profile as { agency_id?: string } | null)?.agency_id ?? null;
+
+      const { data: agent, error } = await supabase
+        .from("agents")
+        .select("id, agency_id, agent_type, name, template_id, config")
+        .eq("id", agentIdFromUrl)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error || !agent) {
+        toast.error("Agente não encontrado");
+        navigate("/agency/agents");
+        return;
+      }
+      if (!myAgencyId || (agent as any).agency_id !== myAgencyId) {
+        toast.error("Sem acesso a este agente");
+        navigate("/agency/agents");
+        return;
+      }
+
+      const cfg = ((agent as any).config ?? {}) as {
+        messages?: Message[];
+        wizard_step?: number;
+        ready_to_publish?: boolean;
+      };
+
+      loadedAgentIdRef.current = (agent as any).id;
+      setAgentId((agent as any).id);
+      setTemplateId((agent as any).template_id ?? null);
+      setLoadedAgentType((agent as any).agent_type ?? null);
+      if (Array.isArray(cfg.messages) && cfg.messages.length > 0) {
+        setMessages(cfg.messages);
+      } else {
+        setMessages([]);
+      }
+      if (typeof cfg.wizard_step === "number") {
+        setActiveStep(cfg.wizard_step);
+      }
+      if (cfg.ready_to_publish === true) {
+        setReadyToPublish(true);
+      }
+      setLoadingAgent(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [agentIdFromUrl, user?.id, navigate]);
+
 
   useEffect(() => {
     if (!user?.id) return;
@@ -123,6 +196,7 @@ export default function NewAgent() {
   async function handleSend() {
     const text = input.trim();
     if (!text) return;
+    if (loadingAgent) return;
     if (!agencyId) {
       toast.error("Sua conta não está vinculada a uma agência");
       return;
@@ -131,8 +205,9 @@ export default function NewAgent() {
     setInput("");
 
     let currentAgentId = agentId;
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-    if (!currentAgentId) {
+    if (!currentAgentId || !uuidRe.test(currentAgentId)) {
       setSaving(true);
       try {
         const { data, error } = await supabase
@@ -151,7 +226,9 @@ export default function NewAgent() {
         if (error) throw error;
         currentAgentId = data.id;
         setAgentId(data.id);
+        loadedAgentIdRef.current = data.id;
         toast.success("Rascunho salvo");
+        navigate(`/agency/agents/${data.id}`, { replace: true });
       } catch (err) {
         console.error(err);
         toast.error("Não foi possível salvar o rascunho");
@@ -347,7 +424,7 @@ export default function NewAgent() {
               />
               <button
                 onClick={handleSend}
-                disabled={!input.trim() || !agencyId || saving || thinking}
+                disabled={!input.trim() || !agencyId || saving || thinking || loadingAgent}
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted p-2 text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                 aria-label="Enviar"
               >

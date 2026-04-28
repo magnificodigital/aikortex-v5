@@ -38,6 +38,7 @@ const sections: Section[] = [
   {
     title: "AIKORTEX",
     items: [
+      { label: "Home", to: "/agency", icon: Home },
       { label: "Agentes", to: "/agency/agents", icon: Bot },
       { label: "Ligações", to: "/agency/calls", icon: Phone },
       { label: "Flows", to: "/agency/flows", icon: Workflow },
@@ -62,6 +63,18 @@ const sections: Section[] = [
           { label: "Reuniões", to: "/agency/meetings", icon: Video },
         ],
       },
+    ],
+  },
+  {
+    title: "PARTNERS",
+    items: [
+      { label: "Dashboard", to: "/agency/partners", icon: LayoutDashboard },
+    ],
+  },
+  {
+    title: "CONTA",
+    items: [
+      { label: "Configurações", to: "/agency/settings", icon: Settings },
     ],
   },
 ];

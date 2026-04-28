@@ -139,6 +139,27 @@ export default function AgencyLayout() {
 
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-3 py-1">
+          {/* Top items (fixed, no section) */}
+          <div className="mb-3 space-y-0.5">
+            {topItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to!}
+                end
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
+                    isActive && "bg-[#1a1a1a] text-white",
+                    collapsed && "justify-center px-0"
+                  )
+                }
+              >
+                <item.icon className="h-4 w-4 shrink-0" />
+                {!collapsed && <span>{item.label}</span>}
+              </NavLink>
+            ))}
+          </div>
 
           {sections.map((section) => {
             const open = openSections[section.title] ?? true;

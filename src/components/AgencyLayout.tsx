@@ -40,11 +40,15 @@ type Item = {
 };
 type Section = { title: string; items: Item[] };
 
+const topItems: Item[] = [
+  { label: "Home", to: "/agency", icon: Home },
+  { label: "Dashboard", to: "/agency/dashboard", icon: LayoutDashboard },
+];
+
 const sections: Section[] = [
   {
     title: "AIKORTEX",
     items: [
-      { label: "Home", to: "/agency", icon: Home },
       { label: "Agentes", to: "/agency/agents", icon: Bot },
       { label: "Ligações", to: "/agency/calls", icon: Phone },
       { label: "Flows", to: "/agency/flows", icon: Workflow },
@@ -56,20 +60,8 @@ const sections: Section[] = [
   {
     title: "GESTÃO",
     items: [
-      {
-        label: "Clientes",
-        to: "/agency/clients",
-        icon: Users,
-        children: [{ label: "Contratos", to: "/agency/contracts", icon: FileText }],
-      },
-      {
-        label: "Vendas",
-        icon: ShoppingCart,
-        children: [
-          { label: "CRM", to: "/agency/crm", icon: ClipboardList },
-          { label: "Reuniões", to: "/agency/meetings", icon: Video },
-        ],
-      },
+      { label: "Clientes", to: "/agency/clients", icon: Users },
+      { label: "Vendas", to: "/agency/crm", icon: ShoppingCart },
       { label: "Financeiro", to: "/agency/finance", icon: DollarSign },
       { label: "Equipe", to: "/agency/team", icon: UserCog },
       { label: "Tarefas", to: "/agency/tasks", icon: CheckSquare },
@@ -85,7 +77,6 @@ const sections: Section[] = [
     title: "CONTA",
     items: [
       { label: "Configurações", to: "/agency/settings", icon: Settings },
-      { label: "Painel Admin", to: "/agency/admin-panel", icon: ShieldCheck },
     ],
   },
 ];
@@ -96,15 +87,12 @@ export default function AgencyLayout() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    AIKORTEX: true,
-    GESTÃO: true,
-    PARTNERS: true,
+    AIKORTEX: false,
+    GESTÃO: false,
+    PARTNERS: false,
     CONTA: true,
   });
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
-    Clientes: true,
-    Vendas: true,
-  });
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [agencyOpen, setAgencyOpen] = useState(false);
 
   async function handleSignOut() {
@@ -151,6 +139,27 @@ export default function AgencyLayout() {
 
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-3 py-1">
+          {/* Top items (fixed, no section) */}
+          <div className="mb-3 space-y-0.5">
+            {topItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to!}
+                end
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
+                    isActive && "bg-[#1a1a1a] text-white",
+                    collapsed && "justify-center px-0"
+                  )
+                }
+              >
+                <item.icon className="h-4 w-4 shrink-0" />
+                {!collapsed && <span>{item.label}</span>}
+              </NavLink>
+            ))}
+          </div>
 
           {sections.map((section) => {
             const open = openSections[section.title] ?? true;

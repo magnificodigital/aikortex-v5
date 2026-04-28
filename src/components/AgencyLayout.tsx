@@ -87,6 +87,8 @@ export default function AgencyLayout() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     AIKORTEX: true,
     GESTÃO: true,
+    PARTNERS: true,
+    CONTA: true,
   });
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
     Clientes: true,

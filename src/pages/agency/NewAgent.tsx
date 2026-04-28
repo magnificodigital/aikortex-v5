@@ -130,31 +130,59 @@ export default function NewAgent() {
     setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
 
-    if (agentId) return;
+    let currentAgentId = agentId;
 
-    setSaving(true);
-    try {
-      const { data, error } = await supabase
-        .from("agents")
-        .insert({
-          agency_id: agencyId,
-          agent_type: template?.agent_type ?? "Custom",
-          name: text.slice(0, 80),
-          template_id: templateId ?? null,
-          status: "draft",
-          description: template?.description ?? null,
-          system_prompt: template?.system_prompt ?? null,
-        })
-        .select("id")
-        .single();
-      if (error) throw error;
-      setAgentId(data.id);
-      toast.success("Rascunho salvo");
-    } catch (err) {
-      console.error(err);
-      toast.error("Não foi possível salvar o rascunho");
-    } finally {
+    if (!currentAgentId) {
+      setSaving(true);
+      try {
+        const { data, error } = await supabase
+          .from("agents")
+          .insert({
+            agency_id: agencyId,
+            agent_type: template?.agent_type ?? "Custom",
+            name: text.slice(0, 80),
+            template_id: templateId ?? null,
+            status: "draft",
+            description: template?.description ?? null,
+            system_prompt: template?.system_prompt ?? null,
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        currentAgentId = data.id;
+        setAgentId(data.id);
+        toast.success("Rascunho salvo");
+      } catch (err) {
+        console.error(err);
+        toast.error("Não foi possível salvar o rascunho");
+        setSaving(false);
+        return;
+      }
       setSaving(false);
+    }
+
+    setThinking(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("app-chat", {
+        body: { agent_id: currentAgentId, user_message: text },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+
+      const assistantMessage = (data as any).assistant_message as string;
+      const wizardStep = (data as any).wizard_step as number;
+      const ready = !!(data as any).ready_to_publish;
+
+      setMessages((m) => [...m, { role: "assistant", content: assistantMessage }]);
+      if (typeof wizardStep === "number" && wizardStep !== activeStep) {
+        setActiveStep(wizardStep);
+      }
+      if (ready) setReadyToPublish(true);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message ?? "Erro ao conversar com o agente");
+    } finally {
+      setThinking(false);
     }
   }
 

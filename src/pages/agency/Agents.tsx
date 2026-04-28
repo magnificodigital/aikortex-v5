@@ -160,7 +160,8 @@ export default function Agents() {
               return (
                 <div
                   key={agent.id}
-                  className="flex items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40"
+                  onClick={() => navigate(`/agency/agents/${agent.id}`)}
+                  className="flex cursor-pointer items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-base font-semibold text-foreground">
                     {initialOf(agent.name)}

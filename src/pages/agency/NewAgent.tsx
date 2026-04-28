@@ -196,6 +196,7 @@ export default function NewAgent() {
   async function handleSend() {
     const text = input.trim();
     if (!text) return;
+    if (loadingAgent) return;
     if (!agencyId) {
       toast.error("Sua conta não está vinculada a uma agência");
       return;
@@ -204,8 +205,9 @@ export default function NewAgent() {
     setInput("");
 
     let currentAgentId = agentId;
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-    if (!currentAgentId) {
+    if (!currentAgentId || !uuidRe.test(currentAgentId)) {
       setSaving(true);
       try {
         const { data, error } = await supabase
@@ -224,7 +226,9 @@ export default function NewAgent() {
         if (error) throw error;
         currentAgentId = data.id;
         setAgentId(data.id);
+        loadedAgentIdRef.current = data.id;
         toast.success("Rascunho salvo");
+        navigate(`/agency/agents/${data.id}`, { replace: true });
       } catch (err) {
         console.error(err);
         toast.error("Não foi possível salvar o rascunho");

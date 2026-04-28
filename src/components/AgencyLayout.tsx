@@ -300,38 +300,39 @@ export default function AgencyLayout() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-[#1a1a1a] p-2">
+        <div className="border-t border-white/[0.06] p-2 space-y-1">
           <button
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-[#1a1a1a] hover:text-white",
+              "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-normal text-[#7585A3] transition-colors hover:bg-white/[0.04] hover:text-white",
               collapsed && "justify-center px-0"
             )}
           >
-            <Sun className="h-4 w-4 shrink-0" />
+            <Sun className="h-5 w-5 shrink-0" strokeWidth={1.75} />
             {!collapsed && <span>Modo claro</span>}
           </button>
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-500 transition-colors hover:bg-[#1a1a1a]",
+              "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-normal text-red-500 transition-colors hover:bg-white/[0.04]",
               collapsed && "justify-center px-0"
             )}
           >
-            <LogOut className="h-4 w-4 shrink-0" />
+            <LogOut className="h-5 w-5 shrink-0" strokeWidth={1.75} />
             {!collapsed && <span>Sair</span>}
           </button>
           <button
             onClick={() => setCollapsed((v) => !v)}
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-[#1a1a1a] hover:text-white",
+              "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-[15px] font-normal text-[#7585A3] transition-colors hover:bg-white/[0.04] hover:text-white",
               collapsed && "justify-center px-0"
             )}
           >
             <ChevronLeft
               className={cn(
-                "h-4 w-4 shrink-0 transition-transform",
+                "h-5 w-5 shrink-0 transition-transform",
                 collapsed && "rotate-180"
               )}
+              strokeWidth={1.75}
             />
             {!collapsed && <span>Recolher</span>}
           </button>

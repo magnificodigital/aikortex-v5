@@ -61,9 +61,11 @@ export default function NewAgent() {
   const [saving, setSaving] = useState(false);
   const [template, setTemplate] = useState<Template | null>(null);
   const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
-  const [activeStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(1);
   const [activeNav, setActiveNav] = useState("Agente");
   const [channelStates, setChannelStates] = useState<Record<string, boolean>>({});
+  const [thinking, setThinking] = useState(false);
+  const [readyToPublish, setReadyToPublish] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>(
     templateParam

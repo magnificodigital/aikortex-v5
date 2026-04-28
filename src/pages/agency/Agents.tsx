@@ -25,15 +25,15 @@ type Template = {
 };
 
 const typeBadgeClass: Record<string, string> = {
-  Router: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  SDR: "bg-[#22c55e]/15 text-[#22c55e] border-[#22c55e]/30",
-  SAC: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  Router: "bg-orange-500/20 text-orange-400",
+  SDR: "bg-green-500/20 text-green-500",
+  SAC: "bg-blue-500/20 text-blue-400",
 };
 
 const categoryColor: Record<string, string> = {
-  Vendas: "text-[#22c55e]",
+  Vendas: "text-green-500",
   Suporte: "text-blue-400",
-  Livre: "text-neutral-400",
+  Livre: "text-muted-foreground",
 };
 
 const categoryIcon: Record<string, typeof Bot> = {

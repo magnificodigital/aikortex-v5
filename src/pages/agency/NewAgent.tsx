@@ -347,7 +347,7 @@ export default function NewAgent() {
               />
               <button
                 onClick={handleSend}
-                disabled={!input.trim() || !agencyId || saving}
+                disabled={!input.trim() || !agencyId || saving || thinking}
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted p-2 text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                 aria-label="Enviar"
               >

@@ -6,7 +6,8 @@ import {
   Phone,
   Mic,
   ArrowUp,
-  Settings2,
+  ExternalLink,
+  Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +31,7 @@ export default function NewAgent() {
     {
       role: "assistant",
       content:
-        'Olá! Sou o seu assistente de configuração da Aikortex. Vamos criar seu agente juntos.\n\n1. Qual será o nome do seu agente? (Ex: "Alex", "Bia da Empresa X")',
+        "Olá! Sou o seu assistente de configuração da Aikortex. Vamos criar seu agente juntos.\n\n1. Qual será o nome do seu agente? (Ex: \"Alex\", \"Bia da Empresa X\", \"Consultor Especialista\")",
     },
   ]);
 
@@ -44,7 +45,7 @@ export default function NewAgent() {
   return (
     <div className="flex h-screen w-full flex-col bg-background text-foreground">
       {/* Top bar */}
-      <header className="flex h-14 w-full shrink-0 items-center justify-between border-b border-border bg-background px-4">
+      <header className="flex h-14 w-full shrink-0 items-center border-b border-border bg-background px-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/agency/agents")}
@@ -59,7 +60,7 @@ export default function NewAgent() {
             <span className="text-sm font-medium text-foreground">
               Agente de Texto e Voz
             </span>
-            <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-500">
+            <span className="rounded-md border border-border px-2 py-0.5 text-xs text-foreground">
               {agentType}
             </span>
           </div>
@@ -72,7 +73,7 @@ export default function NewAgent() {
           </div>
         </div>
 
-        <nav className="flex items-center gap-1">
+        <nav className="ml-auto flex items-center gap-2">
           {navItems.map((item) => (
             <button
               key={item}
@@ -87,25 +88,25 @@ export default function NewAgent() {
               {item}
             </button>
           ))}
-          <button className="ml-2 rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+          <button className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
             Publicar
           </button>
         </nav>
       </header>
 
       {/* Body */}
-      <div className="flex min-h-0 flex-1">
+      <div className="flex h-[calc(100vh-3.5rem)] min-h-0">
         {/* Left panel */}
-        <section className="flex w-[400px] shrink-0 flex-col border-r border-border">
+        <section className="flex w-[420px] shrink-0 flex-col border-r border-border">
           {/* Progress */}
-          <div className="flex items-center justify-between gap-2 border-b border-border px-6 py-3">
+          <div className="flex items-center gap-2 border-b border-border px-6 py-3">
             {steps.map((s, i) => {
               const active = s.n === activeStep;
               return (
                 <div key={s.n} className="flex flex-1 items-center gap-2">
                   <div
                     className={cn(
-                      "flex h-5 w-5 items-center justify-center rounded-full border text-[11px]",
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[11px]",
                       active
                         ? "border-foreground bg-foreground text-background"
                         : "border-border text-muted-foreground"
@@ -116,9 +117,7 @@ export default function NewAgent() {
                   <span
                     className={cn(
                       "text-xs",
-                      active
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground"
+                      active ? "font-medium text-foreground" : "text-muted-foreground"
                     )}
                   >
                     {s.label}
@@ -132,35 +131,44 @@ export default function NewAgent() {
           </div>
 
           {/* Chat messages */}
-          <div className="flex-1 overflow-y-auto bg-background px-5 py-6">
-            <div className="space-y-4">
-              {messages.map((m, idx) => (
+          <div className="flex-1 space-y-4 overflow-y-auto p-4">
+            {messages.map((m, idx) => (
+              <div
+                key={idx}
+                className={cn(
+                  "flex gap-2",
+                  m.role === "user" ? "justify-end" : "justify-start"
+                )}
+              >
+                {m.role === "assistant" && (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                )}
                 <div
-                  key={idx}
                   className={cn(
-                    "flex",
-                    m.role === "user" ? "justify-end" : "justify-start"
+                    "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm",
+                    m.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground"
                   )}
                 >
-                  <div
-                    className={cn(
-                      "max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm",
-                      m.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
-                    )}
-                  >
-                    {m.content}
-                  </div>
+                  {m.content}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
           {/* Input */}
-          <div className="border-t border-border bg-background p-3">
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5">
-              <input
+          <div className="border-t border-border p-3">
+            <div className="flex items-end gap-2 rounded-2xl border border-border bg-card px-3 py-2">
+              <button
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Microfone"
+              >
+                <Mic className="h-4 w-4" />
+              </button>
+              <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -170,18 +178,13 @@ export default function NewAgent() {
                   }
                 }}
                 placeholder="Digite sua resposta..."
-                className="flex-1 border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                rows={1}
+                className="flex-1 resize-none border-0 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
-              <button
-                className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                aria-label="Microfone"
-              >
-                <Mic className="h-4 w-4" />
-              </button>
               <button
                 onClick={handleSend}
                 disabled={!input.trim()}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted p-2 text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                 aria-label="Enviar"
               >
                 <ArrowUp className="h-4 w-4" />
@@ -198,26 +201,24 @@ export default function NewAgent() {
             </span>
           </div>
 
-          <div className="flex flex-1 items-center justify-center px-6">
-            <div className="flex max-w-md flex-col items-center text-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                <Phone className="h-7 w-7" />
-              </div>
-              <h2 className="text-xl font-semibold text-foreground">
-                Configure seu agente de Ligação
-              </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Para usar o modo de voz, configure sua chave de API da
-                ElevenLabs nas Integrações.
-              </p>
-              <button
-                onClick={() => setActiveNav("Integrações")}
-                className="mt-6 inline-flex items-center gap-2 rounded-md border border-border bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                <Settings2 className="h-4 w-4" />
-                Ir para Integrações
-              </button>
+          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+            <div className="flex items-center justify-center rounded-full bg-muted p-4">
+              <Phone className="h-12 w-12 text-muted-foreground" />
             </div>
+            <h2 className="mt-4 text-lg font-semibold text-foreground">
+              Configure seu agente de Ligação
+            </h2>
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+              Para usar o modo de voz, você precisa configurar sua chave de API
+              da ElevenLabs nas Integrações.
+            </p>
+            <button
+              onClick={() => setActiveNav("Integrações")}
+              className="mt-6 inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Ir para Integrações
+            </button>
           </div>
         </section>
       </div>

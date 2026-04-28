@@ -103,10 +103,10 @@ export default function AgencyLayout() {
   const isActive = (to?: string) => !!to && location.pathname === to;
 
   return (
-    <div className="flex h-screen w-full bg-[#000000] text-foreground">
+    <div className="flex h-screen w-full bg-[#14151A] text-foreground">
       <aside
         className={cn(
-          "flex h-full shrink-0 flex-col border-r border-[#1a1a1a] bg-[#000000] transition-[width] duration-200",
+          "flex h-full shrink-0 flex-col border-r border-[#1a1a1a] bg-[#14151A] transition-[width] duration-200",
           collapsed ? "w-16" : "w-60"
         )}
       >

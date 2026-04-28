@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import logoBranco from "@/assets/aikortex-logo-branco.png";
+import iconeBranco from "@/assets/aikortex-icone-branco.png";
 
 type SubItem = { label: string; to: string; icon: LucideIcon };
 type Item = {
@@ -113,16 +114,9 @@ export default function AgencyLayout() {
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center px-5">
+        <div className={cn("flex h-16 items-center", collapsed ? "justify-center px-2" : "px-5")}>
           {collapsed ? (
-            <div className="flex h-8 w-8 items-center justify-center overflow-hidden">
-              <img
-                src={logoBranco}
-                alt="Aikortex"
-                className="h-8 w-auto object-contain object-left"
-                style={{ maxWidth: "none" }}
-              />
-            </div>
+            <img src={iconeBranco} alt="Aikortex" className="h-8 w-8 object-contain" />
           ) : (
             <img src={logoBranco} alt="Aikortex" className="h-7 w-auto" />
           )}

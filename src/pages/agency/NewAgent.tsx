@@ -315,29 +315,148 @@ export default function NewAgent() {
         <section className="flex min-w-0 flex-1 flex-col">
           <div className="flex h-12 shrink-0 items-center border-b border-border px-6">
             <span className="text-sm font-medium text-foreground">
-              Agente de Ligação
+              {activeNav === "Integrações"
+                ? "Integrações"
+                : activeNav === "Canais"
+                ? "Canais de operação"
+                : "Configuração do Agente"}
             </span>
           </div>
 
-          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-            <div className="flex items-center justify-center rounded-full bg-muted p-4">
-              <Phone className="h-12 w-12 text-muted-foreground" />
+          {activeNav === "Agente" && (
+            <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                <Bot className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h2 className="mt-4 text-lg font-semibold text-foreground">
+                Configurando seu agente
+              </h2>
+              <p className="mt-2 max-w-md text-sm text-muted-foreground">
+                Continue respondendo no chat à esquerda. Conforme você avança nos passos Descobrir / Estruturar / Construir, a configuração final do agente aparecerá aqui.
+              </p>
             </div>
-            <h2 className="mt-4 text-lg font-semibold text-foreground">
-              Configure seu agente de Ligação
-            </h2>
-            <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Para usar o modo de voz, você precisa configurar sua chave de API
-              da ElevenLabs nas Integrações.
-            </p>
-            <button
-              onClick={() => setActiveNav("Integrações")}
-              className="mt-6 inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Ir para Integrações
-            </button>
-          </div>
+          )}
+
+          {activeNav === "Integrações" && (
+            <div className="flex-1 overflow-y-auto p-6">
+              <p className="mb-4 text-xs text-muted-foreground">
+                As chaves de integração são configuradas no nível da agência. Os agentes herdam as integrações disponíveis.
+              </p>
+              <div className="space-y-3">
+                {[
+                  {
+                    icon: Sparkles,
+                    name: "LiteLLM Proxy",
+                    desc: "Providers de LLM (OpenAI, Anthropic, Google, DeepSeek, Qwen…)",
+                    badge: "Configurar na Agência",
+                    badgeClass: "bg-muted text-muted-foreground",
+                  },
+                  {
+                    icon: Phone,
+                    name: "ElevenLabs",
+                    desc: "Chamadas de voz em tempo real",
+                    badge: "Configurar na Agência",
+                    badgeClass: "bg-muted text-muted-foreground",
+                  },
+                  {
+                    icon: Mic,
+                    name: "Voz Aikortex",
+                    desc: "Áudios assíncronos para WhatsApp e mensagens",
+                    badge: "Incluso",
+                    badgeClass: "bg-green-500/20 text-green-500",
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.name}
+                      className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                        <Icon className="h-5 w-5 text-foreground" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-semibold text-foreground">
+                          {item.name}
+                        </h3>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {item.desc}
+                        </p>
+                      </div>
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-full px-2 py-0.5 text-xs",
+                          item.badgeClass
+                        )}
+                      >
+                        {item.badge}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {activeNav === "Canais" && (
+            <div className="flex-1 overflow-y-auto p-6">
+              <p className="mb-4 text-xs text-muted-foreground">
+                Selecione onde este agente vai operar. Os canais ficam ativos ao publicar o agente e exigem que a agência tenha a integração correspondente conectada.
+              </p>
+              <div className="space-y-3">
+                {[
+                  {
+                    icon: MessageCircle,
+                    name: "WhatsApp",
+                    desc: "Meta Cloud API — agência precisa estar conectada",
+                    key: "whatsapp",
+                    disabled: true,
+                  },
+                  {
+                    icon: Globe,
+                    name: "Web Chat",
+                    desc: "Widget embedável no site do cliente",
+                    key: "webchat",
+                    disabled: false,
+                  },
+                  {
+                    icon: Mail,
+                    name: "Email",
+                    desc: "Respostas automáticas via SMTP da agência",
+                    key: "email",
+                    disabled: true,
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.key}
+                      className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                        <Icon className="h-5 w-5 text-foreground" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-semibold text-foreground">
+                          {item.name}
+                        </h3>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {item.desc}
+                        </p>
+                      </div>
+                      <Switch
+                        checked={!!channelStates[item.key]}
+                        disabled={item.disabled}
+                        onCheckedChange={(v) =>
+                          setChannelStates((s) => ({ ...s, [item.key]: v }))
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>

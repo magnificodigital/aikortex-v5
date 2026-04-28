@@ -25,15 +25,15 @@ type Template = {
 };
 
 const typeBadgeClass: Record<string, string> = {
-  Router: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  SDR: "bg-[#22c55e]/15 text-[#22c55e] border-[#22c55e]/30",
-  SAC: "bg-blue-500/15 text-blue-400 border-blue-500/30",
+  Router: "bg-orange-500/20 text-orange-400",
+  SDR: "bg-green-500/20 text-green-500",
+  SAC: "bg-blue-500/20 text-blue-400",
 };
 
 const categoryColor: Record<string, string> = {
-  Vendas: "text-[#22c55e]",
+  Vendas: "text-green-500",
   Suporte: "text-blue-400",
-  Livre: "text-neutral-400",
+  Livre: "text-muted-foreground",
 };
 
 const categoryIcon: Record<string, typeof Bot> = {
@@ -122,18 +122,18 @@ export default function Agents() {
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-8 py-10">
+    <div className="mx-auto w-full max-w-6xl bg-background p-8">
       {/* Header */}
       <div className="mb-10 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-white">Agentes IA</h1>
-          <p className="mt-2 text-sm text-neutral-400">
+          <h1 className="text-2xl font-bold text-foreground">Agentes IA</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Crie agentes inteligentes para vendas, suporte, marketing e mais.
           </p>
         </div>
         <button
           onClick={() => navigate("/agency/agents/new")}
-          className="inline-flex items-center gap-2 rounded-md bg-[#22c55e] px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-[#1ea34d]"
+          className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
         >
           <Plus className="h-4 w-4" />
           Novo Agente
@@ -142,28 +142,28 @@ export default function Agents() {
 
       {/* Meus Agentes */}
       <section className="mb-12">
-        <h2 className="mb-4 text-lg font-semibold text-white">Meus Agentes</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Meus Agentes</h2>
         {loading ? (
-          <div className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-6 text-sm text-neutral-500">
+          <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
             Carregando…
           </div>
         ) : agents.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-[#1f1f1f] bg-[#111111] p-10 text-center">
-            <Bot className="mx-auto mb-3 h-8 w-8 text-neutral-600" />
-            <p className="text-sm text-neutral-400">Nenhum agente criado ainda</p>
+          <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
+            <Bot className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Nenhum agente criado ainda</p>
           </div>
         ) : (
           <div className="space-y-3">
             {agents.map((agent) => {
               const badgeClass =
                 typeBadgeClass[agent.type ?? ""] ??
-                "bg-neutral-700/30 text-neutral-300 border-neutral-700";
+                "bg-muted text-muted-foreground";
               return (
                 <div
                   key={agent.id}
-                  className="flex items-start gap-4 rounded-lg border border-[#1f1f1f] bg-[#111111] p-4 transition-colors hover:border-[#2a2a2a]"
+                  className="flex items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent/40"
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#1a1a1a] text-base font-semibold text-white">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-base font-semibold text-foreground">
                     {agent.avatar_url ? (
                       <img
                         src={agent.avatar_url}
@@ -176,13 +176,13 @@ export default function Agents() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="truncate text-sm font-semibold text-white">
+                      <h3 className="truncate text-sm font-semibold text-foreground">
                         {agent.name ?? "Sem nome"}
                       </h3>
                       {agent.type && (
                         <span
                           className={cn(
-                            "rounded-full border px-2 py-0.5 text-[10px] font-medium",
+                            "rounded-full px-2 py-0.5 text-xs",
                             badgeClass
                           )}
                         >
@@ -190,17 +190,17 @@ export default function Agents() {
                         </span>
                       )}
                     </div>
-                    <p className="mt-0.5 text-xs text-neutral-500">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       {[agent.type ?? "Custom", agent.status ?? "—"]
                         .filter(Boolean)
                         .join(" • ")}
                     </p>
                     {agent.description && (
-                      <p className="mt-2 line-clamp-2 text-sm text-neutral-400">
+                      <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
                         {agent.description}
                       </p>
                     )}
-                    <p className="mt-2 text-xs text-neutral-600">
+                    <p className="mt-2 text-xs text-muted-foreground">
                       Atualizado em {formatDate(agent.updated_at)}
                     </p>
                   </div>
@@ -213,27 +213,27 @@ export default function Agents() {
 
       {/* Templates */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold text-white">Templates</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Templates</h2>
         {loadingTemplates ? (
-          <div className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-6 text-sm text-neutral-500">
+          <div className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
             Carregando…
           </div>
         ) : templates.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-[#1f1f1f] bg-[#111111] p-6 text-sm text-neutral-500">
+          <div className="rounded-xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
             Nenhum template disponível
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {templates.map((tpl) => {
               const Icon = categoryIcon[tpl.sector ?? ""] ?? Sparkles;
-              const catColor = categoryColor[tpl.sector ?? ""] ?? "text-neutral-400";
+              const catColor = categoryColor[tpl.sector ?? ""] ?? "text-muted-foreground";
               return (
                 <button
                   key={tpl.id}
                   onClick={() => navigate(`/agency/agents/new?template=${tpl.id}`)}
-                  className="group flex flex-col items-start rounded-lg border border-[#1f1f1f] bg-[#111111] p-5 text-left transition-colors hover:border-[#2a2a2a] hover:bg-[#141414]"
+                  className="group flex cursor-pointer flex-col items-start rounded-xl border border-border bg-card p-6 text-left transition-colors hover:bg-accent/50"
                 >
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#1a1a1a]">
+                  <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-muted">
                     {tpl.avatar_url ? (
                       <img
                         src={tpl.avatar_url}
@@ -241,26 +241,21 @@ export default function Agents() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <Icon className="h-5 w-5 text-neutral-300" />
+                      <Icon className="h-5 w-5 text-foreground" />
                     )}
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm font-semibold text-white">
-                      {tpl.name ?? "Sem nome"}
-                    </h3>
-                    {tpl.agent_type && (
-                      <span className="rounded-full border border-neutral-700 bg-neutral-700/30 px-2 py-0.5 text-[10px] font-medium text-neutral-300">
-                        {tpl.agent_type}
-                      </span>
-                    )}
-                  </div>
+                  <h3 className="mt-4 text-lg font-bold text-foreground">
+                    {tpl.name ?? "Sem nome"}
+                  </h3>
                   {tpl.sector && (
-                    <p className={cn("mt-1 text-xs font-medium", catColor)}>
+                    <p className={cn("mt-0.5 text-sm", catColor)}>
                       {tpl.sector}
                     </p>
                   )}
                   {tpl.description && (
-                    <p className="mt-3 text-sm text-neutral-400">{tpl.description}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      {tpl.description}
+                    </p>
                   )}
                 </button>
               );

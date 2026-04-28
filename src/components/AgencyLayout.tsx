@@ -172,37 +172,66 @@ export default function AgencyLayout() {
                         const anyChildActive = item.children.some((c) =>
                           isActive(c.to)
                         );
+                        const parentActive = isActive(item.to);
                         return (
                           <div key={item.label}>
-                            <button
-                              onClick={() =>
-                                setOpenItems((s) => ({
-                                  ...s,
-                                  [item.label]: !itemOpen,
-                                }))
-                              }
+                            <div
                               className={cn(
-                                "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                "flex w-full items-center gap-3 rounded-md text-sm font-medium transition-colors",
                                 "text-neutral-300 hover:bg-[#1a1a1a] hover:text-white",
-                                anyChildActive && "text-white",
-                                collapsed && "justify-center px-0"
+                                (anyChildActive || parentActive) && "text-white",
+                                collapsed && "justify-center"
                               )}
                             >
-                              <item.icon className="h-4 w-4 shrink-0" />
+                              {item.to ? (
+                                <NavLink
+                                  to={item.to}
+                                  className={({ isActive }) =>
+                                    cn(
+                                      "flex flex-1 items-center gap-3 rounded-md px-3 py-2",
+                                      isActive && "bg-[#1a1a1a] text-white",
+                                      collapsed && "justify-center px-0"
+                                    )
+                                  }
+                                >
+                                  <item.icon className="h-4 w-4 shrink-0" />
+                                  {!collapsed && (
+                                    <span className="flex-1 text-left">{item.label}</span>
+                                  )}
+                                </NavLink>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    setOpenItems((s) => ({ ...s, [item.label]: !itemOpen }))
+                                  }
+                                  className={cn(
+                                    "flex flex-1 items-center gap-3 px-3 py-2",
+                                    collapsed && "justify-center px-0"
+                                  )}
+                                >
+                                  <item.icon className="h-4 w-4 shrink-0" />
+                                  {!collapsed && (
+                                    <span className="flex-1 text-left">{item.label}</span>
+                                  )}
+                                </button>
+                              )}
                               {!collapsed && (
-                                <>
-                                  <span className="flex-1 text-left">
-                                    {item.label}
-                                  </span>
+                                <button
+                                  onClick={() =>
+                                    setOpenItems((s) => ({ ...s, [item.label]: !itemOpen }))
+                                  }
+                                  className="px-2 py-2 text-neutral-400 hover:text-white"
+                                  aria-label={`Alternar ${item.label}`}
+                                >
                                   <ChevronDown
                                     className={cn(
                                       "h-3 w-3 transition-transform",
                                       !itemOpen && "-rotate-90"
                                     )}
                                   />
-                                </>
+                                </button>
                               )}
-                            </button>
+                            </div>
                             {!collapsed && itemOpen && (
                               <div className="ml-4 mt-0.5 space-y-0.5 border-l border-[#1f1f1f] pl-2">
                                 {item.children.map((sub) => (

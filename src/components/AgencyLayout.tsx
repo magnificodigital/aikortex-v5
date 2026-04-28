@@ -161,7 +161,7 @@ export default function AgencyLayout() {
                     onClick={() =>
                       setOpenSections((s) => ({ ...s, [section.title]: !open }))
                     }
-                    className="flex w-full items-center justify-between px-3 py-1.5 text-[11px] font-semibold tracking-wider text-neutral-500 hover:text-neutral-300"
+                    className="flex w-full items-center justify-between px-3 py-1.5 text-[11px] font-semibold tracking-wider text-[#7585A3] hover:text-white"
                   >
                     <span>{section.title}</span>
                     <ChevronDown
@@ -186,7 +186,7 @@ export default function AgencyLayout() {
                             <div
                               className={cn(
                                 "flex w-full items-center gap-3 rounded-md text-sm font-medium transition-colors",
-                                "text-neutral-300 hover:bg-[#1a1a1a] hover:text-white",
+                                "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
                                 (anyChildActive || parentActive) && "text-white",
                                 collapsed && "justify-center"
                               )}
@@ -228,7 +228,7 @@ export default function AgencyLayout() {
                                   onClick={() =>
                                     setOpenItems((s) => ({ ...s, [item.label]: !itemOpen }))
                                   }
-                                  className="px-2 py-2 text-neutral-400 hover:text-white"
+                                  className="px-2 py-2 text-[#7585A3] hover:text-white"
                                   aria-label={`Alternar ${item.label}`}
                                 >
                                   <ChevronDown
@@ -249,7 +249,7 @@ export default function AgencyLayout() {
                                     className={({ isActive }) =>
                                       cn(
                                         "flex items-center gap-3 rounded-md px-3 py-1.5 text-sm transition-colors",
-                                        "text-neutral-400 hover:bg-[#1a1a1a] hover:text-white",
+                                        "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
                                         isActive && "bg-[#1a1a1a] text-white"
                                       )
                                     }
@@ -270,7 +270,7 @@ export default function AgencyLayout() {
                           className={({ isActive }) =>
                             cn(
                               "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                              "text-neutral-300 hover:bg-[#1a1a1a] hover:text-white",
+                              "text-[#7585A3] hover:bg-[#1a1a1a] hover:text-white",
                               isActive && "bg-[#1a1a1a] text-white",
                               collapsed && "justify-center px-0"
                             )

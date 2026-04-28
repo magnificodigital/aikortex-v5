@@ -98,22 +98,22 @@ export default function AgencyLayout() {
   const isActive = (to?: string) => !!to && location.pathname === to;
 
   const itemBase =
-    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] hover:text-[hsl(var(--sidebar-accent-foreground))]";
+    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground";
   const itemActive =
-    "bg-[hsl(var(--sidebar-accent))] text-[hsl(var(--sidebar-accent-foreground))] font-medium";
+    "bg-sidebar-accent text-sidebar-accent-foreground font-medium";
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground">
       <aside
         className={cn(
-          "flex h-full shrink-0 flex-col border-r border-[hsl(var(--sidebar-border))] bg-[hsl(var(--sidebar-background))] transition-[width] duration-200",
+          "flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200",
           collapsed ? "w-16" : "w-56"
         )}
       >
         {/* Logo */}
         <div
           className={cn(
-            "flex h-14 items-center border-b border-[hsl(var(--sidebar-border))]",
+            "flex h-14 items-center border-b border-sidebar-border",
             collapsed ? "justify-center px-2" : "px-4"
           )}
         >
@@ -129,12 +129,12 @@ export default function AgencyLayout() {
           <div className="px-2 pt-3">
             <button
               onClick={() => setAgencyOpen((v) => !v)}
-              className="flex h-8 w-full items-center justify-between rounded-md border border-[hsl(var(--sidebar-border))] bg-transparent px-2 text-xs text-[hsl(var(--sidebar-accent-foreground))] transition-colors hover:bg-[hsl(var(--sidebar-accent))]"
+              className="flex h-8 w-full items-center justify-between rounded-md border border-sidebar-border bg-transparent px-2 text-xs text-sidebar-accent-foreground transition-colors hover:bg-sidebar-accent"
             >
               <span className="truncate">Aikortex</span>
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 text-[hsl(var(--sidebar-foreground))] transition-transform",
+                  "h-3.5 w-3.5 text-sidebar-foreground transition-transform",
                   agencyOpen && "rotate-180"
                 )}
               />
@@ -169,7 +169,7 @@ export default function AgencyLayout() {
                     onClick={() =>
                       setOpenSections((s) => ({ ...s, [section.title]: !open }))
                     }
-                    className="flex w-full items-center justify-between px-3 py-2 mt-4 text-[10px] uppercase tracking-widest text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--sidebar-accent-foreground))]"
+                    className="flex w-full items-center justify-between px-3 py-2 mt-4 text-[10px] uppercase tracking-widest text-sidebar-foreground hover:text-sidebar-accent-foreground"
                   >
                     <span>{section.title}</span>
                     <ChevronDown
@@ -189,9 +189,8 @@ export default function AgencyLayout() {
                           <div key={item.label}>
                             <div
                               className={cn(
-                                "flex w-full items-center gap-3 rounded-md text-sm transition-colors text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] hover:text-[hsl(var(--sidebar-accent-foreground))]",
-                                (anyChildActive || parentActive) &&
-                                  "text-[hsl(var(--sidebar-accent-foreground))]",
+                                "flex w-full items-center gap-3 rounded-md text-sm transition-colors text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                                (anyChildActive || parentActive) && "text-sidebar-accent-foreground",
                                 collapsed && "justify-center"
                               )}
                             >
@@ -232,7 +231,7 @@ export default function AgencyLayout() {
                                   onClick={() =>
                                     setOpenItems((s) => ({ ...s, [item.label]: !itemOpen }))
                                   }
-                                  className="px-2 py-2 text-[hsl(var(--sidebar-foreground))] hover:text-[hsl(var(--sidebar-accent-foreground))]"
+                                  className="px-2 py-2 text-sidebar-foreground hover:text-sidebar-accent-foreground"
                                   aria-label={`Alternar ${item.label}`}
                                 >
                                   <ChevronDown
@@ -254,7 +253,7 @@ export default function AgencyLayout() {
                                     style={{ paddingLeft: "2.75rem" }}
                                     className={({ isActive }) =>
                                       cn(
-                                        "flex items-center gap-3 rounded-md pr-3 py-2 text-sm transition-colors text-[hsl(var(--sidebar-foreground))] hover:bg-[hsl(var(--sidebar-accent))] hover:text-[hsl(var(--sidebar-accent-foreground))]",
+                                        "flex items-center gap-3 rounded-md pr-3 py-2 text-sm transition-colors text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                                         isActive && itemActive
                                       )
                                     }
@@ -289,7 +288,7 @@ export default function AgencyLayout() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-[hsl(var(--sidebar-border))] px-2 py-2 space-y-0.5">
+        <div className="border-t border-sidebar-border px-2 py-2 space-y-0.5">
           <button className={cn(itemBase, "w-full", collapsed && "justify-center px-0")}>
             <Sun className="h-4 w-4 shrink-0" strokeWidth={1.75} />
             {!collapsed && <span>Modo claro</span>}
@@ -297,7 +296,7 @@ export default function AgencyLayout() {
           <button
             onClick={handleSignOut}
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-destructive transition-colors hover:bg-[hsl(var(--sidebar-accent))]",
+              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-destructive transition-colors hover:bg-sidebar-accent",
               collapsed && "justify-center px-0"
             )}
           >

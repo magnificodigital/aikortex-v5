@@ -37,7 +37,7 @@ export default function AgencyHome() {
 
   return (
     <div className="mx-auto flex min-h-full max-w-3xl flex-col items-center px-6 py-20">
-      <h1 className="text-center text-5xl font-light tracking-tight text-white">
+      <h1 className="text-center text-[44px] font-medium leading-tight tracking-tight text-white">
         {greeting()},{" "}
         <span className="font-serif italic font-normal">{name || "Admin"}</span>
       </h1>
@@ -83,8 +83,8 @@ export default function AgencyHome() {
                           className={cn(
                             "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                             active
-                              ? "border-[#22c55e]/40 bg-[#22c55e]/10 text-[#22c55e]"
-                              : "border-white/[0.08] bg-transparent text-[#7585A3] hover:text-white"
+                              ? "border-white/10 bg-white/[0.04] text-white"
+                              : "border-white/[0.06] bg-transparent text-[#7585A3] hover:text-white"
                           )}
                         >
                           <c.icon className="h-3.5 w-3.5" />
@@ -94,7 +94,7 @@ export default function AgencyHome() {
                     })}
                   </div>
                   <button
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-[#111217] transition-colors hover:bg-white/90 disabled:bg-white/10 disabled:text-[#7585A3]"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[#7585A3] transition-colors hover:bg-white/10 hover:text-white disabled:bg-white/[0.04] disabled:text-[#7585A3]"
                     disabled={!values[t.value]?.trim()}
                   >
                     <ArrowUp className="h-4 w-4" />

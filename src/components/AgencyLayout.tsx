@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import logoBranco from "@/assets/aikortex-logo-branco.png";
 
 type SubItem = { label: string; to: string; icon: LucideIcon };
 type Item = {
@@ -112,12 +113,18 @@ export default function AgencyLayout() {
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center gap-2 px-5">
-          <Gem className="h-6 w-6 text-[#22c55e]" />
-          {!collapsed && (
-            <span className="text-xl font-semibold tracking-tight text-white">
-              Aikortex
-            </span>
+        <div className="flex h-16 items-center px-5">
+          {collapsed ? (
+            <div className="flex h-8 w-8 items-center justify-center overflow-hidden">
+              <img
+                src={logoBranco}
+                alt="Aikortex"
+                className="h-8 w-auto object-contain object-left"
+                style={{ maxWidth: "none" }}
+              />
+            </div>
+          ) : (
+            <img src={logoBranco} alt="Aikortex" className="h-7 w-auto" />
           )}
         </div>
 

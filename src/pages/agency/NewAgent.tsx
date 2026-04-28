@@ -63,6 +63,7 @@ export default function NewAgent() {
   const [loadingTemplate, setLoadingTemplate] = useState<boolean>(!!templateParam);
   const [activeStep] = useState(1);
   const [activeNav, setActiveNav] = useState("Agente");
+  const [channelStates, setChannelStates] = useState<Record<string, boolean>>({});
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>(
     templateParam

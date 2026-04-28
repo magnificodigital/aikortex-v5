@@ -37,7 +37,7 @@ export default function AgencyHome() {
 
   return (
     <div className="mx-auto flex min-h-full max-w-3xl flex-col items-center px-6 py-20">
-      <h1 className="text-center text-5xl font-light tracking-tight text-white">
+      <h1 className="text-center text-[44px] font-medium leading-tight tracking-tight text-white">
         {greeting()},{" "}
         <span className="font-serif italic font-normal">{name || "Admin"}</span>
       </h1>

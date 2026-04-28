@@ -6,13 +6,16 @@ import {
   Phone,
   Mic,
   ArrowUp,
-  ExternalLink,
   Bot,
+  MessageCircle,
+  Globe,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 
 type Message = { role: "assistant" | "user"; content: string };
 

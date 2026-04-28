@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import AgencyLayout from "@/components/AgencyLayout";
 import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
-import Agency from "./pages/Agency.tsx";
 import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import AgencyHome from "./pages/agency/Home.tsx";
+import Placeholder from "./pages/agency/Placeholder.tsx";
 
 const queryClient = new QueryClient();
 
@@ -27,10 +29,21 @@ const App = () => (
               path="/agency"
               element={
                 <ProtectedRoute>
-                  <Agency />
+                  <AgencyLayout />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<AgencyHome />} />
+              <Route path="agents" element={<Placeholder title="Agentes" />} />
+              <Route path="flows" element={<Placeholder title="Flows" />} />
+              <Route path="apps" element={<Placeholder title="Apps" />} />
+              <Route path="messages" element={<Placeholder title="Mensagens" />} />
+              <Route path="clients" element={<Placeholder title="Clientes" />} />
+              <Route path="crm" element={<Placeholder title="Vendas" />} />
+              <Route path="meetings" element={<Placeholder title="Reuniões" />} />
+              <Route path="partners" element={<Placeholder title="Partners Dashboard" />} />
+              <Route path="settings" element={<Placeholder title="Configurações" />} />
+            </Route>
             <Route
               path="/admin"
               element={

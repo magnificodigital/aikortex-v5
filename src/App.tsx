@@ -11,6 +11,7 @@ import Login from "./pages/Login.tsx";
 import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AgencyHome from "./pages/agency/Home.tsx";
+import Agents from "./pages/agency/Agents.tsx";
 import Placeholder from "./pages/agency/Placeholder.tsx";
 
 const queryClient = new QueryClient();

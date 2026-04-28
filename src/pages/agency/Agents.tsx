@@ -214,7 +214,7 @@ export default function Agents() {
       {/* Templates */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-white">Templates</h2>
-        {loading ? (
+        {loadingTemplates ? (
           <div className="rounded-lg border border-[#1f1f1f] bg-[#111111] p-6 text-sm text-neutral-500">
             Carregando…
           </div>
